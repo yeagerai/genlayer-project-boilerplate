@@ -1,0 +1,4 @@
+requests==2.31.0
+python-dotenv==1.0.1
+pytest==8.2.1
+pytest-mock==3.14.0
