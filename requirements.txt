@@ -2,3 +2,5 @@ requests==2.31.0
 python-dotenv==1.0.1
 pytest==8.2.1
 pytest-mock==3.14.0
+eth-account==0.13.3
+eth-utils==5.0.0
