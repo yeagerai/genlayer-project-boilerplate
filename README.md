@@ -24,6 +24,10 @@ This project includes the boilerplate code for a GenLayer use case implementatio
    3. Navigate to the "Run and Debug" section.
    4. Follow the on-screen instructions to complete the deployment process.
 
+3. Setup the frontend environment
+  1. Duplicate the .env.example file in the App folder into .env
+  2. Add the contract address to the `.env` under the variable `VITE_CONTRACT_ADDRESS`
+
 3. Run the frontend Vue app
    ```shell
    cd app
