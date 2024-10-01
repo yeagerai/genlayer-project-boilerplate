@@ -1,19 +1,24 @@
 # Sample GenLayer project
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/license/mit/)
+[![Discord](https://dcbadge.vercel.app/api/server/8Jm4v89VAu?compact=true&style=flat)](https://discord.gg/VpfmXEMN66)
+[![Twitter](https://img.shields.io/twitter/url/https/twitter.com/yeagerai.svg?style=social&label=Follow%20%40GenLayer)](https://x.com/GenLayer)
+[![GitHub star chart](https://img.shields.io/github/stars/yeagerai/genlayer-project-boilerplate?style=social)](https://star-history.com/#yeagerai/genlayer-js)
 
+## 👀 About
 This project includes the boilerplate code for a GenLayer use case implementation, specifically a football prediction market.
 
-## What's included
+## 📦 What's included
 - Basic requirements to deploy and test your intelligent contracts locally
 - Configuration file template
 - Test functions to write complete end-to-end tests
 - An example of an intelligent contract (Football Prediction Market)
 - Example end-to-end tests for the contract provided
 
-## Requirements
+## 🛠️ Requirements
 - A running GenLayer simulator (Install from [GenLayer Simulator](https://github.com/yeagerai/genlayer-simulator))
 - An `.env` file with the same variables as in the `.env.example` file
 
-## Steps to run this example
+## 🚀 Steps to run this example
 1. Configure environment
    Clone the `.env.sample` file into `.env` and fill in the values for your configuration.
 
@@ -40,7 +45,7 @@ This project includes the boilerplate code for a GenLayer use case implementatio
    pytest test
    ```
 
-## How the Football Prediction Market Contract Works
+## ⚽ How the Football Prediction Market Contract Works
 
 The Football Prediction Market contract allows users to create predictions for football matches, resolve those predictions, and earn points for correct predictions. Here's a breakdown of its main functionalities:
 
@@ -61,7 +66,7 @@ The Football Prediction Market contract allows users to create predictions for f
    - Points are awarded for correct predictions.
    - Users can check their total points or the points of any player.
 
-## Tests
+## 🧪 Tests
 
 This project includes integration tests that interact with the contract deployed in the simulator. These tests cover the main functionalities of the Football Prediction Market contract:
 
@@ -73,3 +78,17 @@ This project includes integration tests that interact with the contract deployed
 The tests simulate real-world interactions with the contract, ensuring that it behaves correctly under various scenarios. They use the GenLayer simulator to deploy and interact with the contract, providing a comprehensive check of the contract's functionality in a controlled environment.
 
 To run the tests, use the `pytest test` command as mentioned in the "How to run it" section.
+
+
+## 💬 Community
+Connect with the GenLayer community to discuss, collaborate, and share insights:
+- **[Discord Channel](https://discord.gg/8Jm4v89VAu)**: Our primary hub for discussions, support, and announcements.
+- **[Telegram Group](https://t.me/genlayer)**: For more informal chats and quick updates.
+
+Your continuous feedback drives better product development. Please engage with us regularly to test, discuss, and improve GenLayer.
+
+## 📖 Documentation
+For detailed information on how to use GenLayerJS SDK, please refer to our [documentation](https://docs.genlayer.io/).
+
+## 📜 License
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
