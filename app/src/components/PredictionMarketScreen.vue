@@ -266,7 +266,6 @@ const createUserAccount = async () => {
 };
 
 const openCreateModal = () => {
-  console.log("Opening create modal", userAccount.value);
   showCreateModal.value = true;
 };
 
