@@ -19,28 +19,30 @@ This project includes the boilerplate code for a GenLayer use case implementatio
 - An `.env` file with the same variables as in the `.env.example` file
 
 ## 🚀 Steps to run this example
-1. Configure environment
-   Clone the `.env.sample` file into `.env` and fill in the values for your configuration.
 
-2. Deploy the contract
+### 1. Configure environment
+   Clone the `.env.sample` file in the **root** folder and rename it to `.env`, then fill in the values for your configuration.
+
+### 2. Deploy the contract
    Deploy the contract from `/contracts/football_prediction_market.py` using the Simulator's UI:
-   1. Open the GenLayer Simulator interface in your web browser (usually in `http://localhost:8080`).
+   1. Open the GenLayer Simulator interface in your web browser (usually at http://localhost:8080).
    2. Create a new file in the "Contracts" section and paste the content of `/contracts/football_prediction_market.py`.
    3. Navigate to the "Run and Debug" section.
    4. Follow the on-screen instructions to complete the deployment process.
 
-3. Setup the frontend environment
-  1. Duplicate the .env.example file in the App folder into .env
-  2. Add the contract address to the `.env` under the variable `VITE_CONTRACT_ADDRESS`
+### 3. Setup the frontend environment
+  1. Clone the `.env.sample` file in the **/app** folder and rename it to `.env`
+  2. Add the deployed contract address to the `.env` under the variable `VITE_CONTRACT_ADDRESS`
 
-3. Run the frontend Vue app
+### 4. Run the frontend Vue app
    ```shell
    cd app
    npm install
    npm run dev
    ```
-
-4. Test contracts
+   The terminal should display a link to access your frontend app (usually at http://localhost:5173/).
+   
+### 5. Test contracts
    ```shell
    pytest test
    ```
