@@ -63,6 +63,7 @@ class PredictionMarket {
     const receipt = await this.client.waitForTransactionReceipt({
       hash: txHash,
       status: "FINALIZED",
+      interval: 10000,
     });
     return receipt;
   }
