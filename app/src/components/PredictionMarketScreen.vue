@@ -278,6 +278,10 @@ const loadLeaderboard = async () => {
   leaderboard.value = await predictionMarket.getLeaderboard();
 };
 
+const refreshPlayerPoints = async () => {
+  userPoints.value = await predictionMarket.getPlayerPoints(userAddress.value);
+};
+
 const createPrediction = async () => {
   if (gameDate.value && team1.value && team2.value && predictedWinner.value) {
     creatingPrediction.value = true;
@@ -299,6 +303,7 @@ const resolvePrediction = async (predictionId) => {
   resolvingPrediction.value = 0;
   await loadPredictions();
   await loadLeaderboard();
+  await refreshPlayerPoints();
 };
 
 
@@ -306,5 +311,6 @@ const resolvePrediction = async (predictionId) => {
 onMounted(async () => {
   await loadPredictions();
   await loadLeaderboard();
+  await refreshPlayerPoints();
 });
 </script>
