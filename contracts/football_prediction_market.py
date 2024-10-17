@@ -73,7 +73,8 @@ class FootballPredictionMarket(IContract):
         match_resolution_url = (
             "https://www.bbc.com/sport/football/scores-fixtures/" + game_date
         )
-        match_status = await self._check_match(match_resolution_url, team1, team2)
+        # commented to allow to test matches in the past.
+        # match_status = await self._check_match(match_resolution_url, team1, team2)
 
         # if int(match_status["winner"]) > -1:
         #    raise Exception("Game already finished")
