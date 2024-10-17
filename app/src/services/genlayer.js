@@ -12,4 +12,8 @@ export const createAccount = () => {
   return createGenLayerAccount(newAccountPrivateKey);
 };
 
+export const removeAccount = () => {
+  localStorage.removeItem("accountPrivateKey");
+};
+
 export const client = createClient({ chain: simulator, account });

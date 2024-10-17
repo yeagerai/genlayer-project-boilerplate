@@ -16,6 +16,12 @@
         <div v-else>
           <p class="text-lg">Your address: <Address :address="userAddress" /></p>
           <p class="text-lg">Your points: {{ userPoints }}</p>
+          <button
+            @click="disconnectUserAccount"
+            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          >
+            Disconnect
+          </button>
         </div>
       </div>
     </header>
@@ -239,7 +245,7 @@
 
 <script setup>
 import { ref, computed, onMounted } from "vue";
-import { account, createAccount } from "../services/genlayer";
+import { account, createAccount, removeAccount } from "../services/genlayer";
 import PredictionMarket from "../logic/PredictionMarket";
 import Address from "./Address.vue";
 // State
@@ -262,6 +268,12 @@ const showCreateModal = ref(false);
 const createUserAccount = async () => {
   userAccount.value = createAccount();
   predictionMarket.updateAccount(userAccount.value);  
+  userPoints.value = 0;
+};
+
+const disconnectUserAccount = async () => {
+  userAccount.value = null;
+  removeAccount();
   userPoints.value = 0;
 };
 
