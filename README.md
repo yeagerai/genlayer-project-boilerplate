@@ -26,7 +26,7 @@ This project includes the boilerplate code for a GenLayer use case implementatio
 ### 2. Deploy the contract
    Deploy the contract from `/contracts/football_prediction_market.py` using the Simulator's UI:
    1. Open the GenLayer Simulator interface in your web browser (usually at http://localhost:8080).
-   2. Create a new file in the "Contracts" section and paste the content of `/contracts/football_prediction_market.py` (the content is differrent than the existing contract from the examples).
+   2. Create a new file in the "Contracts" section and paste the content of `/contracts/football_prediction_market.py` (the content is different than the existing contract from the examples).
    3. Navigate to the "Run and Debug" section.
    4. Follow the on-screen instructions to complete the deployment process.
 
