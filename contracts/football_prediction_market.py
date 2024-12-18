@@ -1,58 +1,67 @@
+# { "Depends": "py-genlayer:test" }
+
 import json
-from backend.node.genvm.icontract import IContract
-from backend.node.genvm.equivalence_principle import EquivalencePrinciple
+from dataclasses import dataclass
+from genlayer import *
 
 
-class FootballPredictionMarket(IContract):
+@dataclass
+class Prediction:
+    id: str
+    has_resolved: bool
+    game_date: str
+    resolution_url: str
+    team1: str
+    team2: str
+    predicted_winner: str
+    real_winner: str
+    real_score: str
+
+
+@gl.contract
+class FootballPredictionMarket:
+    predictions: TreeMap[Address, TreeMap[str, Prediction]]
+    points: TreeMap[Address, u256]
+
     def __init__(self):
-        self.predictions = {}
-        self.points = {}
+        pass
 
-    async def _check_match(self, resolution_url: str, team1: str, team2: str) -> dict:
-        final_result = {}
-        async with EquivalencePrinciple(
-            result=final_result,
-            principle="The score and the winner has to be exactly the same",
-            comparative=True,
-        ) as eq:
-            web_data = await eq.get_webpage(url=resolution_url)
-            task = f"""In the following web page, find the winning team in a football matchup between the following teams:
-            Team 1: {team1}
-            Team 2: {team2}
+    def _check_match(self, resolution_url: str, team1: str, team2: str) -> dict:
+        def get_match_result() -> str:
+            web_data = gl.get_webpage(resolution_url, mode="text")
+            print(web_data)
 
-            Web page content:
-            {web_data}
-            End of web page data.
+            task = f"""
+In the following web page, find the winning team in a matchup between the following teams:
+Team 1: {team1}
+Team 2: {team2}
 
-            If it says "Kick off [time]" between the names of the two teams, it means the game hasn't started yet.
-            If you fail to extract the score, assume the game is not resolved yet.
+Web page content:
+{web_data}
+End of web page data.
 
-            Respond with the following JSON format:
-            {{
-                "score": str, // The score with numbers only, e.g, "1:2", or "-" if the game is not resolved yet
-                "winner": int, // The number of the winning team, 0 for draw, or -1 if the game is not yet finished
-            }}
-            It is mandatory that you respond only using the JSON above,
-            nothing else. Don't include any other words or characters,
-            your output must be only JSON without any formatting prefix or suffix.
-            This result should be perfectly parseable by a JSON parser without errors.
+If it says "Kick off [time]" between the names of the two teams, it means the game hasn't started yet.
+If you fail to extract the score, assume the game is not resolved yet.
 
-            Given than <answer> is the JSON object response with score and winner, here are examples about how you shouldn't answer:
-            - ```json <answer> ```
-            - the anwer is <answer>
-
-            How you should answer: 
-            <answer>
-
+Respond with the following JSON format:
+{{
+    "score": str, // The score with numbers only, e.g, "1:2", or "-" if the game is not resolved yet
+    "winner": int, // The number of the winning team, 0 for draw, or -1 if the game is not yet finished
+}}
+It is mandatory that you respond only using the JSON format above,
+nothing else. Don't include any other words or characters,
+your output must be only JSON without any formatting prefix or suffix.
+This result should be perfectly parsable by a JSON parser without errors.
             """
-            result = await eq.call_llm(task)
-            eq.set(result)
+            result = gl.exec_prompt(task).replace("```json", "").replace("```", "")
+            print(result)
+            return json.dumps(json.loads(result), sort_keys=True)
 
-        return json.loads(
-            final_result["output"].replace("```json", "").replace("```", "")
-        )
+        result_json = json.loads(gl.eq_principle_strict_eq(get_match_result))
+        return result_json
 
-    async def create_prediction(
+    @gl.public.write
+    def create_prediction(
         self, game_date: str, team1: str, team2: str, predicted_winner: str
     ) -> None:
         """
@@ -79,64 +88,71 @@ class FootballPredictionMarket(IContract):
         # if int(match_status["winner"]) > -1:
         #    raise Exception("Game already finished")
 
-        if not contract_runner.from_address in self.predictions:
-            self.predictions[contract_runner.from_address] = {}
+        sender_address = gl.message.sender_account
 
         prediction_id = f"{game_date}_{team1}_{team2}".lower()
-        if prediction_id in self.predictions[contract_runner.from_address]:
+        if (
+            sender_address in self.predictions
+            and prediction_id in self.predictions[sender_address]
+        ):
             raise Exception("Prediction already created")
 
-        prediction = {
-            "id": prediction_id,
-            "has_resolved": False,
-            "game_date": game_date,
-            "resolution_url": match_resolution_url,
-            "team1": team1,
-            "team2": team2,
-            "predicted_winner": predicted_winner,
-            "real_winner": None,
-            "real_score": None,
-        }
-        self.predictions[contract_runner.from_address][prediction_id] = prediction
+        prediction = Prediction(
+            id=prediction_id,
+            has_resolved=False,
+            game_date=game_date,
+            resolution_url=match_resolution_url,
+            team1=team1,
+            team2=team2,
+            predicted_winner=predicted_winner,
+            real_winner="",
+            real_score="",
+        )
+        self.predictions.get_or_insert_default(sender_address)[
+            prediction_id
+        ] = prediction
 
-    async def resolve_prediction(self, prediction_id: str) -> None:
-        if not prediction_id in self.predictions[contract_runner.from_address]:
+    @gl.public.write
+    def resolve_prediction(self, prediction_id: str) -> None:
+        if not prediction_id in self.predictions[gl.message.sender_account]:
             raise Exception("Prediction not found")
 
-        if self.predictions[contract_runner.from_address][prediction_id][
-            "has_resolved"
-        ]:
+        if self.predictions[gl.message.sender_account][prediction_id].has_resolved:
             raise Exception("Prediction already resolved")
 
-        prediction = self.predictions[contract_runner.from_address][prediction_id]
-        prediction_status = await self._check_match(
-            prediction["resolution_url"], prediction["team1"], prediction["team2"]
+        prediction = self.predictions[gl.message.sender_account][prediction_id]
+        prediction_status = self._check_match(
+            prediction.resolution_url, prediction.team1, prediction.team2
         )
 
         if int(prediction_status["winner"]) < 0:
             raise Exception("Game not finished")
 
-        prediction["has_resolved"] = True
-        prediction["real_winner"] = str(prediction_status["winner"])
-        prediction["real_score"] = prediction_status["score"]
+        prediction.has_resolved = True
+        prediction.real_winner = str(prediction_status["winner"])
+        prediction.real_score = prediction_status["score"]
 
-        if prediction["real_winner"] == prediction["predicted_winner"]:
-            if contract_runner.from_address not in self.points:
-                self.points[contract_runner.from_address] = 0
-            self.points[contract_runner.from_address] += 1
+        if prediction.real_winner == prediction.predicted_winner:
+            if gl.message.sender_account not in self.points:
+                self.points[gl.message.sender_account] = 0
+            self.points[gl.message.sender_account] += 1
 
+    @gl.public.view
     def get_predictions(self) -> dict:
-        return self.predictions
+        return {k.as_hex: v for k, v in self.predictions.items()}
 
+    @gl.public.view
     def get_player_predictions(self, player_address: str) -> dict:
-        if player_address not in self.predictions:
+        if not player_address in self.predictions:
             return {}
-        return self.predictions[player_address]
+        return self.predictions[Address(player_address)]
 
+    @gl.public.view
     def get_points(self) -> dict:
         return self.points
 
+    @gl.public.view
     def get_player_points(self, player_address: str) -> int:
         if player_address not in self.points:
             return 0
-        return self.points[player_address]
+        return self.points[Address(player_address)]
