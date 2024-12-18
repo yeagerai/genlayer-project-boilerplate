@@ -21,19 +21,12 @@ class PredictionMarket {
       functionName: "get_predictions",
       args: [],
     });
-    return Array.from(predictions.entries()).flatMap(([owner, prediction]) => {
-      return Array.from(prediction.entries()).map(([id, predictionData]) => {
-        const predictionObj = Array.from(predictionData.entries()).reduce((obj, [key, value]) => {
-          obj[key] = value;
-          return obj;
-        }, {});
-
-        return {
-          id,
-          ...predictionObj,
-          owner,
-        };
-      });
+    return Object.entries(predictions).flatMap(([owner, prediction]) => {
+      return Object.entries(prediction).map(([id, predictionData]) => ({
+        id,
+        ...predictionData,
+        owner,
+      }));
     });
   }
 
