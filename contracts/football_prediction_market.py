@@ -143,16 +143,18 @@ This result should be perfectly parsable by a JSON parser without errors.
 
     @gl.public.view
     def get_player_predictions(self, player_address: str) -> dict:
-        if not player_address in self.predictions:
+        address = Address(player_address)
+        if address not in self.predictions:
             return {}
-        return self.predictions[Address(player_address)]
+        return self.predictions[address]
 
     @gl.public.view
     def get_points(self) -> dict:
-        return self.points
+        return {k.as_hex: v for k, v in self.points.items()}
 
     @gl.public.view
     def get_player_points(self, player_address: str) -> int:
-        if player_address not in self.points:
+        address = Address(player_address)
+        if address not in self.points:
             return 0
-        return self.points[Address(player_address)]
+        return self.points[address]
