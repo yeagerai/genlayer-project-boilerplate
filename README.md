@@ -12,21 +12,21 @@ This project includes the boilerplate code for a GenLayer use case implementatio
 - Basic requirements to deploy and test your intelligent contracts locally
 - Configuration file template
 - Test functions to write complete end-to-end tests
-- An example of an intelligent contract (Football Prediction Market)
+- An example of an intelligent contract (Football Bets)
 - Example end-to-end tests for the contract provided
 
 ## 🛠️ Requirements
-- A running GenLayer simulator (Install from [GenLayer Simulator](https://github.com/yeagerai/genlayer-simulator)). This repository code does not need to be located in the same directory as the Genlayer Simulator.
+- A running GenLayer Studio (Install from [GenLayer Studio](https://docs.genlayer.com/developers/intelligent-contracts/tooling-setup#using-the-genlayer-studio)). This repository code does not need to be located in the same directory as the Genlayer Studio.
 
 ## 🚀 Steps to run this example
 
 ### 1. Configure environment
-   Rename the `.env.example` file to `.env`, then fill in the values for your configuration.
+   Rename the `.env.example` file to `.env`, then fill in the values for your configuration. The provided values are the standard values for a tipical GenLayer Studio deployed locally.
 
 ### 2. Deploy the contract
-   Deploy the contract from `/contracts/football_prediction_market.py` using the Simulator's UI:
-   1. Open the GenLayer Simulator interface in your web browser (usually at http://localhost:8080).
-   2. Create a new file in the "Contracts" section and paste the content of `/contracts/football_prediction_market.py` (the content is different than the existing contract from the examples).
+   Deploy the contract from `/contracts/football_bets.py` using the Studio's UI:
+   1. Open the GenLayer Studio interface in your web browser (usually at http://localhost:8080).
+   2. Create a new file in the "Contracts" section and paste the content of `/contracts/football_bets.py` (the content is different than the existing contract from the examples).
    3. Navigate to the "Run and Debug" section.
    4. Follow the on-screen instructions to complete the deployment process.
 
@@ -36,7 +36,7 @@ This project includes the boilerplate code for a GenLayer use case implementatio
   3. Add the deployed contract address to the `/app/.env` under the variable `VITE_CONTRACT_ADDRESS`
 
 ### 4. Run the frontend Vue app
-   Ensure your GenLayer Simulator is running, and execute the following commands in your terminal:
+   Ensure your GenLayer Studio is running, and execute the following commands in your terminal:
    ```shell
    cd app
    npm install
@@ -47,42 +47,42 @@ This project includes the boilerplate code for a GenLayer use case implementatio
    
 ### 5. Test contracts
 1. Install the Python packages listed in the `requirements.txt` file in a virtual environment.
-2. Make sure your GenLayer Simulator is running. Then execute the following command in your terminal:
+2. Make sure your GenLayer Studio is running. Then execute the following command in your terminal:
    ```shell
    pytest test
    ```
 
-## ⚽ How the Football Prediction Market Contract Works
+## ⚽ How the Football Bets Contract Works
 
-The Football Prediction Market contract allows users to create predictions for football matches, resolve those predictions, and earn points for correct predictions. Here's a breakdown of its main functionalities:
+The Football Bets contract allows users to create bets for football matches, resolve those bets, and earn points for correct bets. Here's a breakdown of its main functionalities:
 
-1. Creating Predictions:
-   - Users can create a prediction for a specific football match by providing the game date, team names, and their predicted winner.
-   - The contract checks if the game has already finished and if the user has already made a prediction for this match.
+1. Creating Bets:
+   - Users can create a bet for a specific football match by providing the game date, team names, and their predicted winner.
+   - The contract checks if the game has already finished and if the user has already made a bet for this match.
 
-2. Resolving Predictions:
-   - After a match has concluded, users can resolve their predictions.
+2. Resolving Bets:
+   - After a match has concluded, users can resolve their bets.
    - The contract fetches the actual match result from a specified URL.
    - If the prediction was correct, the user earns a point.
 
 3. Querying Data:
-   - Users can retrieve all predictions or predictions for a specific player.
+   - Users can retrieve all bets or bets for a specific player.
    - The contract also allows querying of points, either for all players or for a specific player.
 
 4. Getting Points:
-   - Points are awarded for correct predictions.
+   - Points are awarded for correct bets.
    - Users can check their total points or the points of any player.
 
 ## 🧪 Tests
 
-This project includes integration tests that interact with the contract deployed in the simulator. These tests cover the main functionalities of the Football Prediction Market contract:
+This project includes integration tests that interact with the contract deployed in the Studio. These tests cover the main functionalities of the Football Bets contract:
 
-1. Creating a prediction
-2. Resolving a prediction
-3. Querying predictions for a player
+1. Creating a bet
+2. Resolving a bet
+3. Querying bets for a player
 4. Querying points for a player
 
-The tests simulate real-world interactions with the contract, ensuring that it behaves correctly under various scenarios. They use the GenLayer simulator to deploy and interact with the contract, providing a comprehensive check of the contract's functionality in a controlled environment.
+The tests simulate real-world interactions with the contract, ensuring that it behaves correctly under various scenarios. They use the GenLayer Studio to deploy and interact with the contract, providing a comprehensive check of the contract's functionality in a controlled environment.
 
 To run the tests, use the `pytest test` command as mentioned in the "Steps to run this example" section.
 
@@ -95,7 +95,7 @@ Connect with the GenLayer community to discuss, collaborate, and share insights:
 Your continuous feedback drives better product development. Please engage with us regularly to test, discuss, and improve GenLayer.
 
 ## 📖 Documentation
-For detailed information on how to use GenLayerJS SDK, please refer to our [documentation](https://docs.genlayer.io/).
+For detailed information on how to use GenLayerJS SDK, please refer to our [documentation](https://docs.genlayer.com/).
 
 ## 📜 License
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.

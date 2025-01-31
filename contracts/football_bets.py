@@ -6,7 +6,7 @@ from genlayer import *
 
 
 @dataclass
-class Prediction:
+class Bet:
     id: str
     has_resolved: bool
     game_date: str
@@ -19,8 +19,8 @@ class Prediction:
 
 
 @gl.contract
-class FootballPredictionMarket:
-    predictions: TreeMap[Address, TreeMap[str, Prediction]]
+class FootballBets:
+    bets: TreeMap[Address, TreeMap[str, Bet]]
     points: TreeMap[Address, u256]
 
     def __init__(self):
@@ -61,7 +61,7 @@ This result should be perfectly parsable by a JSON parser without errors.
         return result_json
 
     @gl.public.write
-    def create_prediction(
+    def create_bet(
         self, game_date: str, team1: str, team2: str, predicted_winner: str
     ) -> None:
         """
@@ -90,15 +90,12 @@ This result should be perfectly parsable by a JSON parser without errors.
 
         sender_address = gl.message.sender_account
 
-        prediction_id = f"{game_date}_{team1}_{team2}".lower()
-        if (
-            sender_address in self.predictions
-            and prediction_id in self.predictions[sender_address]
-        ):
-            raise Exception("Prediction already created")
+        bet_id = f"{game_date}_{team1}_{team2}".lower()
+        if sender_address in self.bets and bet_id in self.bets[sender_address]:
+            raise Exception("Bet already created")
 
-        prediction = Prediction(
-            id=prediction_id,
+        bet = Bet(
+            id=bet_id,
             has_resolved=False,
             game_date=game_date,
             resolution_url=match_resolution_url,
@@ -108,45 +105,41 @@ This result should be perfectly parsable by a JSON parser without errors.
             real_winner="",
             real_score="",
         )
-        self.predictions.get_or_insert_default(sender_address)[
-            prediction_id
-        ] = prediction
+        self.bets.get_or_insert_default(sender_address)[bet_id] = bet
 
     @gl.public.write
-    def resolve_prediction(self, prediction_id: str) -> None:
-        if not prediction_id in self.predictions[gl.message.sender_account]:
-            raise Exception("Prediction not found")
+    def resolve_bet(self, bet_id: str) -> None:
+        if not bet_id in self.bets[gl.message.sender_account]:
+            raise Exception("Bet not found")
 
-        if self.predictions[gl.message.sender_account][prediction_id].has_resolved:
-            raise Exception("Prediction already resolved")
+        if self.bets[gl.message.sender_account][bet_id].has_resolved:
+            raise Exception("Bet already resolved")
 
-        prediction = self.predictions[gl.message.sender_account][prediction_id]
-        prediction_status = self._check_match(
-            prediction.resolution_url, prediction.team1, prediction.team2
-        )
+        bet = self.bets[gl.message.sender_account][bet_id]
+        bet_status = self._check_match(bet.resolution_url, bet.team1, bet.team2)
 
-        if int(prediction_status["winner"]) < 0:
+        if int(bet_status["winner"]) < 0:
             raise Exception("Game not finished")
 
-        prediction.has_resolved = True
-        prediction.real_winner = str(prediction_status["winner"])
-        prediction.real_score = prediction_status["score"]
+        bet.has_resolved = True
+        bet.real_winner = str(bet_status["winner"])
+        bet.real_score = bet_status["score"]
 
-        if prediction.real_winner == prediction.predicted_winner:
+        if bet.real_winner == bet.predicted_winner:
             if gl.message.sender_account not in self.points:
                 self.points[gl.message.sender_account] = 0
             self.points[gl.message.sender_account] += 1
 
     @gl.public.view
-    def get_predictions(self) -> dict:
-        return {k.as_hex: v for k, v in self.predictions.items()}
+    def get_bets(self) -> dict:
+        return {k.as_hex: v for k, v in self.bets.items()}
 
     @gl.public.view
-    def get_player_predictions(self, player_address: str) -> dict:
+    def get_player_bets(self, player_address: str) -> dict:
         address = Address(player_address)
-        if address not in self.predictions:
+        if address not in self.bets:
             return {}
-        return self.predictions[address]
+        return self.bets[address]
 
     @gl.public.view
     def get_points(self) -> dict:
