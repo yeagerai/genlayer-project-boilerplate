@@ -1,4 +1,4 @@
-football_prediction_market_contract_schema = {
+football_bets_contract_schema = {
     "id": 1,
     "jsonrpc": "2.0",
     "result": {
@@ -21,7 +21,7 @@ football_prediction_market_contract_schema = {
                     {"name": "team2", "type": "string"},
                     {"name": "predicted_winner", "type": "string"},
                 ],
-                "name": "create_prediction",
+                "name": "create_bet",
                 "outputs": [],
                 "type": "function",
             },
@@ -32,12 +32,6 @@ football_prediction_market_contract_schema = {
                 "type": "function",
             },
             {
-                "inputs": [{"name": "player_address", "type": "string"}],
-                "name": "get_player_predictions",
-                "outputs": [{"name": "", "type": "bytes"}],
-                "type": "function",
-            },
-            {
                 "inputs": [],
                 "name": "get_points",
                 "outputs": [{"name": "", "type": "bytes"}],
@@ -45,23 +39,23 @@ football_prediction_market_contract_schema = {
             },
             {
                 "inputs": [],
-                "name": "get_predictions",
+                "name": "get_bets",
                 "outputs": [{"name": "", "type": "bytes"}],
                 "type": "function",
             },
             {
-                "inputs": [{"name": "prediction_id", "type": "string"}],
-                "name": "resolve_prediction",
+                "inputs": [{"name": "bet_id", "type": "string"}],
+                "name": "resolve_bet",
                 "outputs": [],
                 "type": "function",
             },
         ],
-        "class": "FootballPredictionMarket",
+        "class": "FootballBets",
     },
 }
 
 
-test_football_prediction_market_predictions_win_unresolved = {
+test_football_bets_win_unresolved = {
     "2024-06-20_spain_italy": {
         "game_date": "2024-06-20",
         "has_resolved": False,
@@ -75,7 +69,7 @@ test_football_prediction_market_predictions_win_unresolved = {
     }
 }
 
-test_football_prediction_market_predictions_win_resolved = {
+test_football_bets_win_resolved = {
     "2024-06-20_spain_italy": {
         "game_date": "2024-06-20",
         "has_resolved": True,
@@ -89,7 +83,7 @@ test_football_prediction_market_predictions_win_resolved = {
     }
 }
 
-test_football_prediction_market_predictions_draw_unresolved = {
+test_football_bets_draw_unresolved = {
     "2024-06-20_denmark_england": {
         "game_date": "2024-06-20",
         "has_resolved": False,
@@ -103,7 +97,7 @@ test_football_prediction_market_predictions_draw_unresolved = {
     }
 }
 
-test_football_prediction_market_predictions_draw_resolved = {
+test_football_bets_draw_resolved = {
     "2024-06-20_denmark_england": {
         "game_date": "2024-06-20",
         "has_resolved": True,
@@ -117,7 +111,7 @@ test_football_prediction_market_predictions_draw_resolved = {
     }
 }
 
-test_football_prediction_market_predictions_unsuccess_unresolved = {
+test_football_bets_unsuccess_unresolved = {
     "2024-06-20_spain_italy": {
         "game_date": "2024-06-20",
         "has_resolved": False,
@@ -131,7 +125,7 @@ test_football_prediction_market_predictions_unsuccess_unresolved = {
     }
 }
 
-test_football_prediction_market_predictions_unsuccess_resolved = {
+test_football_bets_unsuccess_resolved = {
     "2024-06-20_spain_italy": {
         "game_date": "2024-06-20",
         "has_resolved": True,

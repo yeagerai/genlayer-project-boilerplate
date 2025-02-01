@@ -6,7 +6,7 @@
 [![GitHub star chart](https://img.shields.io/github/stars/yeagerai/genlayer-project-boilerplate?style=social)](https://star-history.com/#yeagerai/genlayer-js)
 
 ## 👀 About
-This project includes the boilerplate code for a GenLayer use case implementation, specifically a football prediction market.
+This project includes the boilerplate code for a GenLayer use case implementation, specifically a football bet market.
 
 ## 📦 What's included
 - Basic requirements to deploy and test your intelligent contracts locally
@@ -63,7 +63,7 @@ The Football Bets contract allows users to create bets for football matches, res
 2. Resolving Bets:
    - After a match has concluded, users can resolve their bets.
    - The contract fetches the actual match result from a specified URL.
-   - If the prediction was correct, the user earns a point.
+   - If the Bet was correct, the user earns a point.
 
 3. Querying Data:
    - Users can retrieve all bets or bets for a specific player.

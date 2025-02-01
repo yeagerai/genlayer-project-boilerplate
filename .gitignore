@@ -9,3 +9,4 @@
 *.sln
 *.sw?
 .env
+node_modules

@@ -2,7 +2,7 @@
   <div class="min-h-screen bg-gray-100 text-gray-900">
     <header class="bg-white shadow flex justify-between">
       <div class="max-w-7xl py-6 px-4 sm:px-6 lg:px-8">
-        <h1 class="text-3xl font-bold text-gray-900">GenLayer Football Prediction Market</h1>
+        <h1 class="text-3xl font-bold text-gray-900">GenLayer Football Bets</h1>
       </div>
       <div class="max-w-7xl py-6 px-4 sm:px-6 lg:px-8 text-right">
         <div v-if="!userAddress">
@@ -29,15 +29,15 @@
       <!-- Account Section -->
 
       <div class="grid grid-cols-1 md:grid-cols-10 gap-8">
-        <!-- Predictions List -->
+        <!-- Bets List -->
         <div class="bg-white shadow overflow-hidden sm:rounded-lg col-span-7">
           <div class="px-4 py-5 sm:px-6 flex justify-between items-center">
-            <h2 class="text-lg leading-6 font-medium text-gray-900">Predictions</h2>
+            <h2 class="text-lg leading-6 font-medium text-gray-900">Bets</h2>
             <button
               @click="openCreateModal"
               class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded text-sm"
             >
-              Create Prediction
+              Create Bet
             </button>
           </div>
           <div class="border-t border-gray-200">
@@ -95,43 +95,43 @@
                 </tr>
               </thead>
               <tbody class="bg-white divide-y divide-gray-200">
-                <tr v-for="prediction in predictions" :key="prediction.id">
+                <tr v-for="bet in bets" :key="bet.id">
                   <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    <Address :address="prediction.owner" />
+                    <Address :address="bet.owner" />
                   </td>
                   <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {{ prediction.game_date }}
+                    {{ bet.game_date }}
                   </td>
                   <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {{ prediction.team1 }}
+                    {{ bet.team1 }}
                   </td>
                   <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {{ prediction.team2 }}
+                    {{ bet.team2 }}
                   </td>
                   <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {{ prediction.predicted_winner === "0" ? "Draw" : (prediction.predicted_winner === "1" ? prediction.team1 : prediction.team2) }}
+                    {{ bet.predicted_winner === "0" ? "Draw" : (bet.predicted_winner === "1" ? bet.team1 : bet.team2) }}
                   </td>
                   <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    <span :class="prediction.has_resolved ? 'text-green-600' : 'text-yellow-600'">
-                      {{ prediction.has_resolved ? "Resolved" : "Unresolved" }}
+                    <span :class="bet.has_resolved ? 'text-green-600' : 'text-yellow-600'">
+                      {{ bet.has_resolved ? "Resolved" : "Unresolved" }}
                     </span>
                   </td>
                   <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    <span v-if="prediction.has_resolved" :class="prediction.predicted_winner === String(prediction.real_winner) ? 'text-green-600' : 'text-red-600'">
-                      {{ prediction.predicted_winner === String(prediction.real_winner) ? "Success" : "Failure" }}
+                    <span v-if="bet.has_resolved" :class="bet.predicted_winner === String(bet.real_winner) ? 'text-green-600' : 'text-red-600'">
+                      {{ bet.predicted_winner === String(bet.real_winner) ? "Success" : "Failure" }}
                     </span>
                   </td>
                   <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                    <div v-if="resolvingPrediction !== prediction.id">
+                    <div v-if="resolvingBet !== bet.id">
                       <button
-                        v-if="prediction.owner === userAddress && !prediction.has_resolved"
-                        @click="resolvePrediction(prediction.id)"
+                        v-if="bet.owner === userAddress && !bet.has_resolved"
+                        @click="resolveBet(bet.id)"
                         class="text-indigo-600 hover:text-indigo-900"
                       >
                         Resolve
                       </button>
                     </div>
-                    <div v-else>Resolving prediction</div>
+                    <div v-else>Resolving bet</div>
                   </td>
                 </tr>
               </tbody>
@@ -182,13 +182,13 @@
         </div>
       </div>
 
-      <!-- Create Prediction Modal -->
+      <!-- Create Bet Modal -->
       <div
         v-if="showCreateModal"
         class="fixed inset-0 bg-gray-600 bg-opacity-75 overflow-y-auto h-full w-full flex items-center justify-center"
       >
         <div class="relative p-5 border w-96 shadow-lg rounded-md bg-white">
-          <h3 class="text-lg font-medium leading-6 text-gray-900 mb-2">Create Prediction</h3>
+          <h3 class="text-lg font-medium leading-6 text-gray-900 mb-2">Create Bet</h3>
           <input
             v-model="gameDate"
             type="date"
@@ -215,9 +215,9 @@
             <option value="2">Team 2</option>
           </select>
           <div class="mt-4">
-            <div v-if="!creatingPrediction">
+            <div v-if="!creatingBet">
               <button
-                @click="createPrediction"
+                @click="createBet"
                 class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-2"
               >
                 Create
@@ -246,28 +246,29 @@
 <script setup>
 import { ref, computed, onMounted } from "vue";
 import { account, createAccount, removeAccount } from "../services/genlayer";
-import PredictionMarket from "../logic/PredictionMarket";
+import FootballBets from "../logic/FootballBets";
 import Address from "./Address.vue";
 // State
 const gameDate = ref("");
 const team1 = ref("");
 const team2 = ref("");
-const creatingPrediction = ref(false);
-const resolvingPrediction = ref(0);
+const creatingBet = ref(false);
+const resolvingBet = ref(0);
 const predictedWinner = ref("");
 const contractAddress = import.meta.env.VITE_CONTRACT_ADDRESS;
-const predictionMarket = new PredictionMarket(contractAddress, account);
+const studioUrl = import.meta.env.VITE_STUDIO_URL;
+const footballBets = new FootballBets(contractAddress, account, studioUrl);
 const userAccount = ref(account);
 const userPoints = ref(0);
 const userAddress = computed(() => userAccount.value?.address);
-const predictions = ref([]);
+const bets = ref([]);
 const leaderboard = ref([]);
 const showCreateModal = ref(false);
 
 // Methods
 const createUserAccount = async () => {
   userAccount.value = createAccount();
-  predictionMarket.updateAccount(userAccount.value);  
+  footballBets.updateAccount(userAccount.value);  
   userPoints.value = 0;
 };
 
@@ -281,26 +282,26 @@ const openCreateModal = () => {
   showCreateModal.value = true;
 };
 
-const loadPredictions = async () => {
-  const allPredictions = await predictionMarket.getPredictions();
-  predictions.value = allPredictions;
+const loadBets = async () => {
+  const allBets = await footballBets.getBets();
+  bets.value = allBets;
 };
 
 const loadLeaderboard = async () => {
-  leaderboard.value = await predictionMarket.getLeaderboard();
+  leaderboard.value = await footballBets.getLeaderboard();
 };
 
 const refreshPlayerPoints = async () => {
-  userPoints.value = await predictionMarket.getPlayerPoints(userAddress.value);
+  userPoints.value = await footballBets.getPlayerPoints(userAddress.value);
 };
 
-const createPrediction = async () => {
+const createBet = async () => {
   if (gameDate.value && team1.value && team2.value && predictedWinner.value) {
-    creatingPrediction.value = true;
-    await predictionMarket.createPrediction(gameDate.value, team1.value, team2.value, predictedWinner.value);
-    await loadPredictions();
+    creatingBet.value = true;
+    await footballBets.createBet(gameDate.value, team1.value, team2.value, predictedWinner.value);
+    await loadBets();
     // Reset form fields
-    creatingPrediction.value = false;
+    creatingBet.value = false;
     gameDate.value = "";
     team1.value = "";
     team2.value = "";
@@ -309,11 +310,11 @@ const createPrediction = async () => {
   }
 };
 
-const resolvePrediction = async (predictionId) => {
-  resolvingPrediction.value = predictionId;
-  await predictionMarket.resolvePrediction(predictionId);
-  resolvingPrediction.value = 0;
-  await loadPredictions();
+const resolveBet = async (betId) => {
+  resolvingBet.value = betId;
+  await footballBets.resolveBet(betId);
+  resolvingBet.value = 0;
+  await loadBets();
   await loadLeaderboard();
   await refreshPlayerPoints();
 };
@@ -321,7 +322,7 @@ const resolvePrediction = async (predictionId) => {
 
 // Initialize with some sample data
 onMounted(async () => {
-  await loadPredictions();
+  await loadBets();
   await loadLeaderboard();
   await refreshPlayerPoints();
 });

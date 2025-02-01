@@ -1,13 +1,17 @@
 import { createClient } from "genlayer-js";
 import { simulator } from "genlayer-js/chains";
 
-class PredictionMarket {
+class FootballBets {
   contractAddress;
   client;
 
-  constructor(contractAddress, account = null) {
+  constructor(contractAddress, account = null, studioUrl = null) {
     this.contractAddress = contractAddress;
-    const config = { chain: simulator, ...(account ? { account } : {}) };
+    const config = {
+      chain: simulator,
+      ...(account ? { account } : {}),
+      ...(studioUrl ? { endpoint: studioUrl } : {}),
+    };
     this.client = createClient(config);
   }
 
@@ -15,22 +19,22 @@ class PredictionMarket {
     this.client = createClient({ chain: simulator, account });
   }
 
-  async getPredictions() {
-    const predictions = await this.client.readContract({
+  async getBets() {
+    const bets = await this.client.readContract({
       address: this.contractAddress,
-      functionName: "get_predictions",
+      functionName: "get_bets",
       args: [],
     });
-    return Array.from(predictions.entries()).flatMap(([owner, prediction]) => {
-      return Array.from(prediction.entries()).map(([id, predictionData]) => {
-        const predictionObj = Array.from(predictionData.entries()).reduce((obj, [key, value]) => {
+    return Array.from(bets.entries()).flatMap(([owner, bet]) => {
+      return Array.from(bet.entries()).map(([id, betData]) => {
+        const betObj = Array.from(betData.entries()).reduce((obj, [key, value]) => {
           obj[key] = value;
           return obj;
         }, {});
 
         return {
           id,
-          ...predictionObj,
+          ...betObj,
           owner,
         };
       });
@@ -55,16 +59,18 @@ class PredictionMarket {
       functionName: "get_points",
       args: [],
     });
-
-    return Object.entries(points)
-      .map(([address, points]) => ({ address, points }))
+    return Array.from(points.entries())
+      .map(([address, points]) => ({
+        address,
+        points: Number(points),
+      }))
       .sort((a, b) => b.points - a.points);
   }
 
-  async createPrediction(gameDate, team1, team2, predictedWinner) {
+  async createBet(gameDate, team1, team2, predictedWinner) {
     const txHash = await this.client.writeContract({
       address: this.contractAddress,
-      functionName: "create_prediction",
+      functionName: "create_bet",
       args: [gameDate, team1, team2, predictedWinner],
     });
     const receipt = await this.client.waitForTransactionReceipt({
@@ -75,11 +81,11 @@ class PredictionMarket {
     return receipt;
   }
 
-  async resolvePrediction(predictionId) {
+  async resolveBet(betId) {
     const txHash = await this.client.writeContract({
       address: this.contractAddress,
-      functionName: "resolve_prediction",
-      args: [predictionId],
+      functionName: "resolve_bet",
+      args: [betId],
     });
     const receipt = await this.client.waitForTransactionReceipt({
       hash: txHash,
@@ -91,4 +97,4 @@ class PredictionMarket {
   }
 }
 
-export default PredictionMarket;
+export default FootballBets;

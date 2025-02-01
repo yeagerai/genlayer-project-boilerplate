@@ -29,32 +29,26 @@ class FootballBets:
     def _check_match(self, resolution_url: str, team1: str, team2: str) -> dict:
         def get_match_result() -> str:
             web_data = gl.get_webpage(resolution_url, mode="text")
-            print(web_data)
 
             task = f"""
-In the following web page, find the winning team in a matchup between the following teams:
+Extract the match result for:
 Team 1: {team1}
 Team 2: {team2}
 
-Web page content:
+Web content:
 {web_data}
-End of web page data.
 
-If it says "Kick off [time]" between the names of the two teams, it means the game hasn't started yet.
-If you fail to extract the score, assume the game is not resolved yet.
-
-Respond with the following JSON format:
+Respond in JSON:
 {{
-    "score": str, // The score with numbers only, e.g, "1:2", or "-" if the game is not resolved yet
-    "winner": int, // The number of the winning team, 0 for draw, or -1 if the game is not yet finished
+    "score": str, // e.g., "1:2" or "-" if unresolved
+    "winner": int // 0 for draw, -1 if unresolved
 }}
 It is mandatory that you respond only using the JSON format above,
 nothing else. Don't include any other words or characters,
 your output must be only JSON without any formatting prefix or suffix.
 This result should be perfectly parsable by a JSON parser without errors.
-            """
+        """
             result = gl.exec_prompt(task).replace("```json", "").replace("```", "")
-            print(result)
             return json.dumps(json.loads(result), sort_keys=True)
 
         result_json = json.loads(gl.eq_principle_strict_eq(get_match_result))
@@ -64,21 +58,6 @@ This result should be perfectly parsable by a JSON parser without errors.
     def create_bet(
         self, game_date: str, team1: str, team2: str, predicted_winner: str
     ) -> None:
-        """
-        Initializes a new bet with the specified game date and teams.
-
-        Args:
-            game_date (str): The date of the game in the format 'YYYY-MM-DD'.
-            team1 (str): The name of the first team.
-            team2 (str): The name of the second team.
-
-        Attributes:
-            has_resolved (bool): Indicates whether the game's resolution has been processed. Default is False.
-            game_date (str): The date of the game.
-            resolution_url (str): The URL to the game's resolution on BBC Sport.
-            team1 (str): The name of the first team.
-            team2 (str): The name of the second team.
-        """
         match_resolution_url = (
             "https://www.bbc.com/sport/football/scores-fixtures/" + game_date
         )
@@ -109,9 +88,6 @@ This result should be perfectly parsable by a JSON parser without errors.
 
     @gl.public.write
     def resolve_bet(self, bet_id: str) -> None:
-        if not bet_id in self.bets[gl.message.sender_account]:
-            raise Exception("Bet not found")
-
         if self.bets[gl.message.sender_account][bet_id].has_resolved:
             raise Exception("Bet already resolved")
 
@@ -135,19 +111,9 @@ This result should be perfectly parsable by a JSON parser without errors.
         return {k.as_hex: v for k, v in self.bets.items()}
 
     @gl.public.view
-    def get_player_bets(self, player_address: str) -> dict:
-        address = Address(player_address)
-        if address not in self.bets:
-            return {}
-        return self.bets[address]
-
-    @gl.public.view
     def get_points(self) -> dict:
         return {k.as_hex: v for k, v in self.points.items()}
 
     @gl.public.view
     def get_player_points(self, player_address: str) -> int:
-        address = Address(player_address)
-        if address not in self.points:
-            return 0
-        return self.points[address]
+        return self.points.get(Address(player_address), 0)
