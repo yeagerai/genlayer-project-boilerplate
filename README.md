@@ -6,7 +6,7 @@
 [![GitHub star chart](https://img.shields.io/github/stars/yeagerai/genlayer-project-boilerplate?style=social)](https://star-history.com/#yeagerai/genlayer-js)
 
 ## 👀 About
-This project includes the boilerplate code for a GenLayer use case implementation, specifically a football bet market.
+This project includes the boilerplate code for a GenLayer use case implementation, specifically a football bets game.
 
 ## 📦 What's included
 - Basic requirements to deploy and test your intelligent contracts locally
@@ -16,7 +16,7 @@ This project includes the boilerplate code for a GenLayer use case implementatio
 - Example end-to-end tests for the contract provided
 
 ## 🛠️ Requirements
-- A running GenLayer Studio (Install from [GenLayer Studio](https://docs.genlayer.com/developers/intelligent-contracts/tooling-setup#using-the-genlayer-studio)). This repository code does not need to be located in the same directory as the Genlayer Studio.
+- A running GenLayer Studio (Install from [Docs](https://docs.genlayer.com/developers/intelligent-contracts/tooling-setup#using-the-genlayer-studio) or work with the hosted version of [GenLayer Studio](https://studio.genlayer.com/)). If you are working locally, this repository code does not need to be located in the same directory as the Genlayer Studio.
 
 ## 🚀 Steps to run this example
 
@@ -66,7 +66,7 @@ The Football Bets contract allows users to create bets for football matches, res
    - If the Bet was correct, the user earns a point.
 
 3. Querying Data:
-   - Users can retrieve all bets or bets for a specific player.
+   - Users can retrieve all bets.
    - The contract also allows querying of points, either for all players or for a specific player.
 
 4. Getting Points:
