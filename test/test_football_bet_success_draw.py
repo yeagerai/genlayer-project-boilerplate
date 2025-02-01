@@ -6,7 +6,7 @@ from tools.request import (
     send_transaction,
     call_contract_method,
     payload,
-    post_request_localhost,
+    post_request,
 )
 from tools.structure import execute_icontract_function_response_structure
 from tools.response import (
@@ -24,15 +24,15 @@ from test.football_bets_get_contract_schema_for_code import (
 def test_football_bets_success():
     # Account
     account_1 = create_new_account()
-    # Validators
-    result = post_request_localhost(
-        payload("sim_createRandomValidators", 5, 8, 12, ["openai"], ["gpt-4o"])
-    ).json()
-    assert has_success_status(result)
+    # Validators - not needed for studio.genlayer.com
+    # result = post_request(
+    #     payload("sim_createRandomValidators", 5, 8, 12, ["openai"], ["gpt-4o"])
+    # ).json()
+    # assert has_success_status(result)
 
     # Contract Schema
     contract_code = open("contracts/football_bets.py", "r").read()
-    result_schema = post_request_localhost(
+    result_schema = post_request(
         payload("gen_getContractSchemaForCode", contract_code)
     ).json()
     assert has_success_status(result_schema)
@@ -103,8 +103,6 @@ def test_football_bets_success():
     )
     assert get_player_points_result == 1
 
-    # Delete Validators
-    delete_validators_result = post_request_localhost(
-        payload("sim_deleteAllValidators")
-    ).json()
-    assert has_success_status(delete_validators_result)
+    # Delete Validators - not needed for studio.genlayer.com
+    # delete_validators_result = post_request(payload("sim_deleteAllValidators")).json()
+    # assert has_success_status(delete_validators_result)

@@ -2,55 +2,39 @@ football_bets_contract_schema = {
     "id": 1,
     "jsonrpc": "2.0",
     "result": {
-        "abi": [
-            {"inputs": [], "type": "constructor"},
-            {
-                "inputs": [
-                    {"name": "resolution_url", "type": "string"},
-                    {"name": "team1", "type": "string"},
-                    {"name": "team2", "type": "string"},
+        "ctor": {"kwparams": {}, "params": []},
+        "methods": {
+            "create_bet": {
+                "kwparams": {},
+                "params": [
+                    ["game_date", "string"],
+                    ["team1", "string"],
+                    ["team2", "string"],
+                    ["predicted_winner", "string"],
                 ],
-                "name": "_check_match",
-                "outputs": [{"name": "", "type": "bytes"}],
-                "type": "function",
+                "readonly": False,
+                "ret": "null",
             },
-            {
-                "inputs": [
-                    {"name": "game_date", "type": "string"},
-                    {"name": "team1", "type": "string"},
-                    {"name": "team2", "type": "string"},
-                    {"name": "predicted_winner", "type": "string"},
-                ],
-                "name": "create_bet",
-                "outputs": [],
-                "type": "function",
+            "get_bets": {"kwparams": {}, "params": [], "readonly": True, "ret": "dict"},
+            "get_player_points": {
+                "kwparams": {},
+                "params": [["player_address", "string"]],
+                "readonly": True,
+                "ret": "int",
             },
-            {
-                "inputs": [{"name": "player_address", "type": "string"}],
-                "name": "get_player_points",
-                "outputs": [{"name": "", "type": "uint256"}],
-                "type": "function",
+            "get_points": {
+                "kwparams": {},
+                "params": [],
+                "readonly": True,
+                "ret": "dict",
             },
-            {
-                "inputs": [],
-                "name": "get_points",
-                "outputs": [{"name": "", "type": "bytes"}],
-                "type": "function",
+            "resolve_bet": {
+                "kwparams": {},
+                "params": [["bet_id", "string"]],
+                "readonly": False,
+                "ret": "null",
             },
-            {
-                "inputs": [],
-                "name": "get_bets",
-                "outputs": [{"name": "", "type": "bytes"}],
-                "type": "function",
-            },
-            {
-                "inputs": [{"name": "bet_id", "type": "string"}],
-                "name": "resolve_bet",
-                "outputs": [],
-                "type": "function",
-            },
-        ],
-        "class": "FootballBets",
+        },
     },
 }
 
