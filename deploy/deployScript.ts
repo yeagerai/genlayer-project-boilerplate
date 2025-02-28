@@ -4,7 +4,6 @@ import { TransactionHash, TransactionStatus, GenLayerClient } from "genlayer-js/
 
 
 export default async function main(client: GenLayerClient<any>) {
-  console.log('teste')
   const filePath = path.resolve(process.cwd(), "contracts/football_bets.py");
 
   try {
