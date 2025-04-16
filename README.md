@@ -45,12 +45,12 @@ This project includes the boilerplate code for a GenLayer use case implementatio
    The terminal should display a link to access your frontend app (usually at http://localhost:5173/).
    For more information on the code see [GenLayerJS](https://github.com/yeagerai/genlayer-js).
    
-<!-- ### 5. Test contracts
+### 5. Test contracts
 1. Install the Python packages listed in the `requirements.txt` file in a virtual environment.
 2. Make sure your GenLayer Studio is running. Then execute the following command in your terminal:
    ```shell
-   pytest test
-   ``` -->
+   gltest
+   ```
 
 ## ⚽ How the Football Bets Contract Works
 
@@ -73,7 +73,7 @@ The Football Bets contract allows users to create bets for football matches, res
    - Points are awarded for correct bets.
    - Users can check their total points or the points of any player.
 
-<!-- ## 🧪 Tests
+## 🧪 Tests
 
 This project includes integration tests that interact with the contract deployed in the Studio. These tests cover the main functionalities of the Football Bets contract:
 
@@ -84,7 +84,7 @@ This project includes integration tests that interact with the contract deployed
 
 The tests simulate real-world interactions with the contract, ensuring that it behaves correctly under various scenarios. They use the GenLayer Studio to deploy and interact with the contract, providing a comprehensive check of the contract's functionality in a controlled environment.
 
-To run the tests, use the `pytest test` command as mentioned in the "Steps to run this example" section. -->
+To run the tests, use the `gltest` command as mentioned in the "Steps to run this example" section.
 
 
 ## 💬 Community
